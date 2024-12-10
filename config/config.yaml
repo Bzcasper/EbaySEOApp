@@ -1,0 +1,177 @@
+# Application Configuration
+app:
+  name: EbaySEOApp
+  version: 1.0.0
+  environment: development  # development, staging, production
+  debug: true
+  log_level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  timezone: UTC
+
+# Server Configuration
+server:
+  host: 0.0.0.0
+  port: 7860
+  workers: 4
+  timeout: 60
+  cors:
+    allowed_origins:
+      - http://localhost:3000
+      - http://localhost:8080
+    allowed_methods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    allow_credentials: true
+
+# Database Configuration
+database:
+  primary:
+    type: sqlite
+    path: /app/data/ebay_data.db
+    pool_size: 5
+    max_overflow: 10
+    timeout: 30
+  backup:
+    enabled: true
+    path: /app/backup/db
+    schedule: "0 0 * * *"  # Daily at midnight
+    retention_days: 7
+
+# eBay API Configuration
+ebay:
+  app_id: ${EBAY_APP_ID}
+  cert_id: ${EBAY_CERT_ID}
+  dev_id: ${EBAY_DEV_ID}
+  auth_token: ${EBAY_AUTH_TOKEN}
+  sandbox_mode: true
+  rate_limit:
+    requests_per_second: 5
+    max_retries: 3
+    retry_delay: 1
+
+# Cloud Storage Configuration
+storage:
+  provider: aws  # aws, gcp, azure
+  aws:
+    bucket: ${AWS_BUCKET_NAME}
+    region: ${AWS_REGION}
+    access_key: ${AWS_ACCESS_KEY}
+    secret_key: ${AWS_SECRET_KEY}
+  gcp:
+    project_id: ${GCP_PROJECT_ID}
+    bucket: ${GCP_BUCKET_NAME}
+    credentials_file: /app/config/gcp_credentials.json
+
+# Image Processing
+image:
+  max_size: 5242880  # 5MB
+  allowed_formats:
+    - jpg
+    - jpeg
+    - png
+    - webp
+  processing:
+    resize:
+      enabled: true
+      max_width: 1024
+      max_height: 1024
+    quality:
+      jpeg_quality: 85
+      png_compression: 9
+  storage:
+    input_dir: /app/images/input
+    output_dir: /app/images/output
+    temp_dir: /app/images/temp
+
+# SEO Configuration
+seo:
+  description:
+    min_length: 100
+    max_length: 5000
+    templates_file: /app/config/seo_templates.json
+  keywords:
+    min_count: 5
+    max_count: 20
+    min_length: 3
+  model:
+    name: t5-base
+    max_length: 512
+    batch_size: 16
+
+# Pipeline Configuration
+pipeline:
+  batch_size: 50
+  max_retries: 3
+  retry_delay: 5
+  parallel_processing: true
+  stages:
+    scraping:
+      enabled: true
+      timeout: 300
+    image_processing:
+      enabled: true
+      timeout: 600
+    seo_generation:
+      enabled: true
+      timeout: 300
+    database_upload:
+      enabled: true
+      timeout: 300
+
+# Monitoring Configuration
+monitoring:
+  prometheus:
+    enabled: true
+    port: 9090
+    path: /metrics
+    scrape_interval: 15s
+  grafana:
+    enabled: true
+    port: 3000
+  logging:
+    file: /app/logs/app.log
+    max_size: 100MB
+    backup_count: 10
+    format: json
+  alerts:
+    email:
+      enabled: true
+      smtp_server: ${SMTP_SERVER}
+      smtp_port: 587
+      username: ${SMTP_USERNAME}
+      password: ${SMTP_PASSWORD}
+      from_address: alerts@ebayseoapp.com
+      to_addresses:
+        - admin@ebayseoapp.com
+    slack:
+      enabled: false
+      webhook_url: ${SLACK_WEBHOOK_URL}
+
+# Cache Configuration
+cache:
+  type: redis
+  redis:
+    host: localhost
+    port: 6379
+    db: 0
+    password: ${REDIS_PASSWORD}
+    ssl: false
+  settings:
+    ttl: 3600
+    max_size: 1000
+
+# Development Tools
+development:
+  hot_reload: true
+  debug_toolbar: true
+  profile_queries: true
+  test:
+    coverage:
+      enabled: true
+      minimum: 80
+    parallel: true
+    unittest:
+      verbose: true
+    pytest:
+      capture: true
