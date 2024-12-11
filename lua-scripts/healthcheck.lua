@@ -19,11 +19,21 @@ local CONFIG = {
     min_disk_space = 1024 * 1024 * 100, -- 100MB
     max_log_size = 1024 * 1024 * 500    -- 500MB
 }
+-- Check log file size
+local function check_log_size()
+    local log_file = "/app/logs/pipeline.log"
+    local size = lfs.attributes(log_file, "size")
+    if size and size > CONFIG.max_log_size then
+        return false, "Log file too large"
+    end
+
+    return true
+end
 
 -- Check system resources
 local function check_resources()
     -- Check disk space
-    local handle = io.popen("df -B1 /app/data | tail -1 | awk '{print $4}'")
+    local handle = io.popen("df -B1 /app | tail -1 | awk '{print $4}'")
     local free_space = tonumber(handle:read("*a"))
     handle:close()
     

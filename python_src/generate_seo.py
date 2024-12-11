@@ -3,7 +3,14 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqGeneration
 import json
 import logging
 from typing import Dict, List, Optional
+from .config import config
 
+class SEOGenerator:
+    def __init__(self):
+        self.model_name = config.get('seo', 'model', 'name')
+        self.max_length = config.get('seo', 'model', 'max_length')
+        self.batch_size = config.get('seo', 'model', 'batch_size')
+        
 class SEOGenerator:
     def __init__(self):
         self.logger = logging.getLogger(__name__)

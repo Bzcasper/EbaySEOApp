@@ -89,12 +89,13 @@ RUN useradd -m -s /bin/bash appuser && \
     chown -R appuser:appuser /app
 
 WORKDIR /app
+COPY --chown=appuser:appuser ./sql /app/sql
 
 # Copy application files
-COPY --chown=appuser:appuser . /app/
+COPY --chown=appuser:appuser . /app
 
 # Set up entrypoint script
-COPY --chown=appuser:appuser scripts/entrypoint.sh /app/entrypoint.sh
+COPY --chown=appuser:appuser entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 USER appuser
